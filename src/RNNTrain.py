@@ -49,8 +49,11 @@ def testModel(model, dataLoader, lossFunction, device):
             Total += labels.size(0)
             Correct += predicted.eq(labels).sum().item()
     
-    avgLoss = runningLoss / (i + 1)
-    avgAcc = (Correct / Total) * 100
+            avgLoss = runningLoss / (i + 1)
+            avgAcc = (Correct / Total) * 100
+    
+    return avgLoss, avgAcc 
+
 
 
 

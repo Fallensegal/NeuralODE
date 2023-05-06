@@ -1,14 +1,14 @@
 # Fdb version 3
-["bibtex main"] 1683331851 "main.aux" "main.bbl" "main" 1683331852
+["bibtex NeuralODE"] 1683331884 "NeuralODE.aux" "NeuralODE.bbl" "NeuralODE" 1683331884
   "./icml2021.bst" 1682741360 27147 754d35bad1e0551f1b55824eb3875247 ""
-  "main.aux" 1683331851 2174 c8e2cd2b70180831b67a53a837548b3f "pdflatex"
+  "NeuralODE.aux" 1683331884 2174 c8e2cd2b70180831b67a53a837548b3f "pdflatex"
   "main.bib" 1683329811 1968 7a9058804355d5ab3493cccb07990e74 ""
   (generated)
-  "main.bbl"
-  "main.blg"
-["pdflatex"] 1683331851 "/home/wislam/ECE50024/NeuralODE/Latex/main.tex" "main.pdf" "main" 1683331852
+  "NeuralODE.bbl"
+  "NeuralODE.blg"
+["pdflatex"] 1683331884 "/home/wislam/ECE50024/NeuralODE/Latex/NeuralODE.tex" "NeuralODE.pdf" "NeuralODE" 1683331884
   "/etc/texmf/web2c/texmf.cnf" 1682466848 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/wislam/ECE50024/NeuralODE/Latex/main.tex" 1683331850 16102 9e8d09826182ac5a4191d459b2e2006f ""
+  "/home/wislam/ECE50024/NeuralODE/Latex/NeuralODE.tex" 1683331850 16102 9e8d09826182ac5a4191d459b2e2006f ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -171,6 +171,10 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1682466866 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1682466889 2800525 6af964b60a73795a81a74f723e891ea4 ""
   "Augmented_ODe.png" 1683089053 13543 c0fcb545e9435ba25a4c5d4db03c0fc4 ""
+  "NeuralODE.aux" 1683331884 2174 c8e2cd2b70180831b67a53a837548b3f "pdflatex"
+  "NeuralODE.bbl" 1683331884 1925 b28cb4503ec98139e622eaecb9d30e2b "bibtex NeuralODE"
+  "NeuralODE.out" 1683331884 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "NeuralODE.tex" 1683331850 16102 9e8d09826182ac5a4191d459b2e2006f ""
   "TestAccuracy.png" 1683328623 38105 e200af703d1f66f63bc3af785b7e826d ""
   "TestLoss.png" 1683328623 36724 0a1f67286b68e2f2473416755fb810a3 ""
   "TimeSeries.png" 1683082751 52515 ec04b72ea224c4f607341917e0fef05f ""
@@ -180,12 +184,8 @@
   "algorithmic.sty" 1682741360 7414 ce084815cf0aab483787dbc4bf2ace9c ""
   "fancyhdr.sty" 1682741360 20521 e5d13d98d57bd53d4fed3aa61bd29c86 ""
   "icml2021.sty" 1682729555 27110 308fc59c0c45776754af1da0c44b9470 ""
-  "main.aux" 1683331851 2174 c8e2cd2b70180831b67a53a837548b3f "pdflatex"
-  "main.bbl" 1683331851 1925 b28cb4503ec98139e622eaecb9d30e2b "bibtex main"
-  "main.out" 1683331851 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "main.tex" 1683331850 16102 9e8d09826182ac5a4191d459b2e2006f ""
   (generated)
-  "main.aux"
-  "main.log"
-  "main.out"
-  "main.pdf"
+  "NeuralODE.aux"
+  "NeuralODE.log"
+  "NeuralODE.out"
+  "NeuralODE.pdf"

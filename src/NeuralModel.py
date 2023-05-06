@@ -1,72 +1,68 @@
 import torch
 import torch.nn as NN
 import numpy as np
-from torchdiffeq import odeint_adjoint
 import torch.nn.functional as F
-"""
-class ODEFunction(NN.Module):
-    def __init__(self):
-        super(ODEFunction, self).__init__()
-        self.Linear1 = NN.Linear(784, 128)
-        self.Linear2 = NN.Linear(128, 64)
-        self.Relu = NN.ReLU()
-    
-    def forward(self, t, layer):
-        layer = self.Relu(self.Linear1(layer))
-        layer = self.Relu(self.Linear2(layer))
-        return layer
+from torchdiffeq import odeint_adjoint
+from torch import Tensor
+
+
+def addTime(inFeatures, time):
+    batchSize, channels, width, height = inFeatures.shape
+    return torch.cat((inFeatures, time.expand(batchSize, 1, width, height)), dim=1)
+
+class ODE_Function(NN.Module):
+    def __init__(self, Dim):
+        super(ODE_Function, self).__init__()
+        self.conv1 = NN.Conv2d(Dim + 1, Dim, kernel_size=3, stride=1, padding=1, bias=False)
+        self.norm1 = NN.BatchNorm2d(Dim)
+        self.conv2 = NN.Conv2d(Dim + 1, Dim, kernel_size=3, stride=1, padding=1, bias=False)
+        self.norm2 = NN.BatchNorm2d(Dim)
+        self.relu = NN.ReLU()
+
+    def forward(self, time, features):
+        xt = addTime(features, time)
+        layer = self.norm1(self.relu(self.conv1(xt)))
+        layerT = addTime(layer, time)
+        DXDT = self.norm2(self.relu(self.conv2(layerT)))
+        
+        return DXDT
 
 class NeuralODE(NN.Module):
-    def __init__(self, T=1.0):
+    def __init__(self, Function):
         super(NeuralODE, self).__init__()
-        self.ODE_FUNC = ODEFunction()
-        self.T = T
-        self.Linear3 = NN.Linear(64, 10)
-    
-    def forward(self, inputLayer):
-        batchSize = inputLayer.shape[0]
-        inputLayer_Flat = inputLayer.view(batchSize, -1)
-        layer = odeint_adjoint(self.ODE_FUNC, inputLayer_Flat, torch.tensor([0.0, self.T]), method='dopri5')
-        print(f"layer shape after odeint_adjoint: {layer.shape}")
-        layer = layer[1].squeeze()
-        print(f"layer shape after squeeze: {layer.shape}")
-        output = self.Linear3(layer)
-        print(f"output shape: {output.shape}")
-        return output
-"""
-class ODEFunction(NN.Module):
-    def __init__(self):
-        super(ODEFunction, self).__init__()
-        self.CONV1 = NN.Conv2d(1, 16, kernel_size=3, stride=1, padding=1)
-        self.POOL1 = NN.MaxPool2d(kernel_size=2)
-        self.Relu = NN.ReLU()
-    
-    def forward(self, t, layer):
-                    
-        layer = self.Relu(self.CONV1(layer))
-        layer = self.POOL1(layer)
-        layer = layer.view(-1, 1, 28, 28)
-        return layer
-    
-class NeuralODE(NN.Module):
-    def __init__(self, T=1.0):        # Usually the T variable would be used for hidden layer, but in this instance we are initializing time
-        super(NeuralODE, self).__init__()
-        self.ODE_FUNC = ODEFunction()
-        self.T = T
-        self.ConvOutShape = self._GetConvOutShape()
-        self.FullConn1 = NN.Linear(1*28*28, 10)
-    
-    def _GetConvOutShape(self):
-        with torch.no_grad():
-            layer = torch.zeros(1, 1, 28, 28)
-            layer = self.ODE_FUNC(self.T, layer)
-            return int(np.prod(layer.shape[1:]))
-
-    def forward(self, inputLayer):
-        batchSize = inputLayer.shape[0]
-        inputLayer = inputLayer.view(batchSize, 1 , 28 , 28)
-       
-        layer = odeint_adjoint(self.ODE_FUNC, inputLayer, torch.tensor([0.0, self.T]), method='dopri5')[-1]
-        output = self.FullConn1(layer)
-
-        return F.softmax(output, dim=1)
+        self.ODEFunc = Function
+        
+    def forward(self, Feature0, Time=Tensor([0., 1.]), returnWhole=False):
+        Time = Time.to(Feature0)
+        Feature = odeint_adjoint(self.ODEFunc, Feature0, Time, method='rk4')
+        if returnWhole:
+            return Feature
+        else:
+            return Feature[-1]
+        
+class NeuralMNISTClassifier(NN.Module):
+    def __init__(self, ODEFunc):
+        super(NeuralMNISTClassifier, self).__init__()
+        self.Downsample = NN.Sequential(
+            NN.Conv2d(1, 64, kernel_size=3, stride=1),
+            NN.BatchNorm2d(64),
+            NN.ReLU(inplace=True),
+            NN.Conv2d(64, 64, kernel_size=4, stride=2),
+            #NN.BatchNorm2d(64),
+            #NN.ReLU(inplace=True),
+            #NN.Conv2d(64, 64, kernel_size=4, stride=2),
+            )
+        self.ODEBlock = ODEFunc
+        self.NORM = NN.BatchNorm2d(64)
+        self.avgPool = NN.AdaptiveAvgPool2d((1, 1))
+        self.FC = NN.Linear(64, 10)
+        
+    def forward(self, input):
+        input = self.Downsample(input)
+        input = self.ODEBlock(input)
+        #input = self.NORM(input)
+        input = self.avgPool(input)
+        SHAPE = torch.prod(torch.tensor(input.shape[1:])).item()
+        input = input.view(-1, SHAPE)
+        OUTPUT = self.FC(input)
+        return OUTPUT
